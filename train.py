@@ -63,7 +63,7 @@ if __name__ == "__main__":
     model.apply(utils.init_weights)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=lr)
+    optimizer = torch.optim.SGD(model.parameters(), lr=lr, weight_decay=1e-2)
 
     print("Starting training...")
     test_accuracy = train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device)
