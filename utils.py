@@ -1,11 +1,11 @@
 import torch
 import torchvision
-from models import Network
+import models
 from torch import nn
 from torch.utils import data
 from torchvision import transforms
-from matplotlib import pyplot as plt
-from d2l import torch as d2l
+# from matplotlib import pyplot as plt
+# from d2l import torch as d2l
 
 # from d2l import torch as d2l
 
@@ -16,7 +16,7 @@ class Accumulator:
         self.data = n * [0.0]
     
     def add(self, *args):
-        self.data = [a + float(b) for a, b in zip(self,data, args)]
+        self.data = [a + float(b) for a, b in zip(self.data, args)]
     
     def reset(self):
         self.data = [0.0] * len(self.data)
@@ -53,42 +53,18 @@ def accuracy(y_pred, y):
     cmp = y_pred.type(y.dtype) == y
     return float(cmp.type(y.dtype).sum())
 
-def evaluate_accuracy(net, data_iter):
-    if isinstance(net, torch.nn.Module):
-        net.eval()
+def evaluate_accuracy(model, data_iter):
+    if isinstance(model, torch.nn.Module):
+        model.eval()
     metric = Accumulator(2) # count (1) num of accurate predictions and (2) total num of predictions
     with torch.no_grad():
         for X, y in data_iter:
-            metric.add(accuracy(net(X), y), y.numel())
+            metric.add(accuracy(model(X), y), y.numel())
     return metric[0] / metric[1]
 
-def train_epoch(net, train_iter, criterion, optimizer, device):
-    net = Network().to
-    if isinstance(net, nn.Module):
-        net.train()
-    # count (1) total training loss, (2) total training accuracy, and (3) num of samples
-    metric = Accumulator(3)
-    for X, y in train_iter:
-        y_pred = net(X)
-        loss = criterion(y_pred, y)
-        
-        optimizer.zero_grad()
-        loss.mean().backward()
-        optimizer.step()
-        
-        metric.add(float(loss.sum()), accuracy(y_pred, y), y.numel())
-        
-    return metric[0] / metric[2], metric[1] / metric[2]
+def init_weights(m):
+    if type(m) == nn.Linear:
+        nn.init.xavier_uniform_(m.weight)
+        nn.init.zeros_(m.bias)
 
-def train(net, train_iter, test_iter, criterion, num_epochs, optimizer):
-    for epoch in range(num_epochs):
-        train_metrics = train_epoch(net, train_iter, criterion, optimizer)
-        test_acc = evaluate_accuracy(net, test_iter)
-        if epoch % 10 == 0:
-            print(f'Epoch {epoch}, '
-                  f'train loss {train_metrics[0]:.3f}, '
-                  f'train acc {train_metrics[1]:.3f}, '
-                  f'test acc {test_acc:.3f}')
-    
-    #draw the training curve
-    
+
