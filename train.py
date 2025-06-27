@@ -34,7 +34,7 @@ def train_epoch(model, train_iter, criterion, optimizer, device):
 
     return train_loss / num_samples, train_acc / num_samples
 
-def train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device):
+def train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device, save=False):
     for epoch in range(num_epochs):
         train_metrics = train_epoch(model, train_iter, criterion, optimizer, device)
         test_acc = test.evaluate_accuracy(model, test_iter, device)
@@ -43,6 +43,9 @@ def train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device
                   f'train loss {train_metrics[0]:.5f}, '
                   f'train acc {train_metrics[1] * 100:.3f} %, '
                   f'test acc {test_acc * 100:.3f} %')
+            
+    if save:   
+        torch.save(model.state_dict(), 'fashionmnist.pth')
 
     # evaluate the model
     test_acc = test.evaluate_accuracy(model, test_iter, device)
@@ -50,7 +53,7 @@ def train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device
      
     
 if __name__ == "__main__":
-    batch_size = 256
+    batch_size = 128
     num_epochs = 60
     lr = 0.1
     # device = torch.device('cpu')
@@ -63,10 +66,11 @@ if __name__ == "__main__":
     model.apply(utils.init_weights)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=lr, weight_decay=1e-2)
+    # optimizer = torch.optim.SGD(model.parameters(), lr=lr, weight_decay=1e-2)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     print("Starting training...")
-    test_accuracy = train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device)
+    test_accuracy = train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device, save=True)
     print(f'Final test accuracy: {test_accuracy:.3f}')
    
     
