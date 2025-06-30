@@ -7,7 +7,7 @@ class MLP(nn.Module):
         self.layer1 = nn.Linear(784, 256)
         self.dropout1 = nn.Dropout(0.2)
         self.layer2 = nn.Linear(256, 256)
-        self.dropout2 = nn.Dropout(0.5)
+        self.dropout2 = nn.Dropout(0.3)
         self.layer3 = nn.Linear(256, 10)
 
     def forward(self, x):
@@ -16,4 +16,4 @@ class MLP(nn.Module):
         x = self.dropout1(x)
         x = torch.relu(self.layer2(x))
         x = self.dropout2(x)
-        return self.layer3(x)
+        return torch.log_softmax(self.layer3(x), dim=1)
