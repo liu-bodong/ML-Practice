@@ -36,6 +36,8 @@ def train_epoch(model, train_iter, criterion, optimizer, device):
 
 def train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device, save=False):
     for epoch in range(num_epochs):
+            
+            
         train_metrics = train_epoch(model, train_iter, criterion, optimizer, device)
         test_acc = test.evaluate_accuracy(model, test_iter, device)
         if epoch % 10 == 0:
@@ -53,6 +55,7 @@ def train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device
      
     
 if __name__ == "__main__":
+    
     batch_size = 256
     num_epochs = 30
     lr = 0.1
