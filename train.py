@@ -36,6 +36,8 @@ def train_epoch(model, train_iter, criterion, optimizer, device):
 
 def train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device, save=False):
     for epoch in range(num_epochs):
+            
+            
         train_metrics = train_epoch(model, train_iter, criterion, optimizer, device)
         test_acc = test.evaluate_accuracy(model, test_iter, device)
         if epoch % 10 == 0:
@@ -53,8 +55,9 @@ def train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device
      
     
 if __name__ == "__main__":
+    
     batch_size = 256
-    num_epochs = 60
+    num_epochs = 30
     lr = 0.1
     # device = torch.device('cpu')
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -66,7 +69,8 @@ if __name__ == "__main__":
     model.apply(utils.init_weights)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-2)
+    # optimizer = torch.optim.SGD(model.parameters(), lr=lr, weight_decay=1e-2)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     print("Starting training...")
     test_accuracy = train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device, save=True)
