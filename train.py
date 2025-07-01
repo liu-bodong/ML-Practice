@@ -53,7 +53,7 @@ def train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device
      
     
 if __name__ == "__main__":
-    batch_size = 128
+    batch_size = 256
     num_epochs = 60
     lr = 0.1
     # device = torch.device('cpu')
@@ -66,8 +66,7 @@ if __name__ == "__main__":
     model.apply(utils.init_weights)
 
     criterion = nn.CrossEntropyLoss()
-    # optimizer = torch.optim.SGD(model.parameters(), lr=lr, weight_decay=1e-2)
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=1e-2)
 
     print("Starting training...")
     test_accuracy = train(model, train_iter, test_iter, criterion, num_epochs, optimizer, device, save=True)
