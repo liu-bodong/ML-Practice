@@ -5,6 +5,10 @@ from torch.nn import functional as F
 from collections import OrderedDict
 from d2l import torch as d2l
 
+import os
+
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
 def load_resnet():
     pretrained_net = torchvision.models.resnet18(pretrained=True)   
     return nn.Sequential(*list(pretrained_net.children())[:-2])
@@ -30,6 +34,7 @@ def loss(inputs, targets):
 if __name__ == "__main__":
     pretrained_resnet = torchvision.models.resnet18(weights=True)
     trimmed_resnet = list(pretrained_resnet.children())[:-2]
+    print("training")
     
     num_class = 21
     
