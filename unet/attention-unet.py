@@ -150,7 +150,7 @@ if __name__ == "__main__":
         model = AttnUNet(3, 1).to("cuda:0")
         flops, params = profile(model, (input,))
 
-        print("-" * 50)
-        print('FLOPS(计算速度) = ' + str(flops / 1000 ** 3) + ' G')
-        print('Params(参数量) = ' + str(params / 1000 ** 2) + ' M')     
+        print("-" * 30)
+        print(f'Flops  = {clever_format(flops, format="%.5f")}')
+        print(f'Params = {clever_format(params, format="%.5f")}')
         
